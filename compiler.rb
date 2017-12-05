@@ -26,3 +26,6 @@ end
 $Jsfile.close
 end
 end
+$compiler = Compiler.new
+$compiler.compileto_Js()
+puts File.read("code.js")
