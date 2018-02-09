@@ -2,9 +2,15 @@
 #include <time.h>
 
 void gday() {
-  time_t seconds;
-
-   seconds = time(NULL);
-   printf("Hours since January 1, 1970 = %ld\n", seconds/3600);
-  
+ typedef struct{
+   int seconds;
+   int minutes;
+   char *Full_Time;
+ }Date;
+  time_t tm;
+  Date dt;
+  dt.seconds = (int)time(NULL);
+  dt.minutes = (int)time(NULL);
+  dt.Full_Time = __TIME__;
+  return dt.Full_Time;
 }
