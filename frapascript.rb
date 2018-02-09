@@ -1,11 +1,113 @@
-BEGIN {
-    $stdout.printf "%s","FrapaScript Language!\n"
-}
-editor = gets.chomp.to_s
+editor = gets.to_s
 $edt = editor
+require "json"
+require 'open-uri'
+require 'csv'
+
+
+module Lang
+ end
+module HTML
+class Web
+def initialize(url)
+@url = "http://"+url
+
+end
+def getUrl
+return @url
+end
+end
+end
+class Yarn < String
+def initialize(yrn)
+@yrn = yrn
+end
+def toYarn(str)
+@str = str
+@str.join("\"")
+return @str
+end
+def ignore_Quots(thing)
+@thing = thing
+@@quot = "\"#{@thing}"
+return @@quot
+end
+end
+module Frapascript
+class Statements
+@@statements_reserved = Array["def","func","set","fn","function","math","if","end","class","clazz","Const","Dim","sys.echo","import","require","ascii","requires","method","actor","klass","sys","HaI","window","document","browser","earth","@NS","console","endif","endClass","endClazz","endKlass","End_Class","string","strng","yarn","int","INT","Integer","NUM","NUMBER","Digit","digi_T","echo","print","prntLn","printFL_n","printf","$","KTHNX_By.E","number","Int","Number","Klazz","klazz","Class","demo","dev","Dev","DEV","dEV","Requires","Using.libs","System","system","STDOUT","STDOUTT","ERR","THROW","Throw!","String","Bool","bool","Regex","regEX","regex","Boolean","TRUE","FALSE","true","false","PATTERN","Pattern","EXAMP","PSTACK","this","This","THis","ThIs","Self","self","current","xisn","_:Destruct","_~Destrct!","AND","And","Not","Yes","No","On","Off","module","scripting","language","Define","&Define","~","D","Sint","SINT","Double","Fixed","Fix","ERRORR","#INCLUDE","IO","::","File","file","IO~~_filE","(",")","{","}","Sod","End_Sod","SubClass","Subclass","Space","End.Sub_Class","FLASS","Flass","flass"]
+
+def getStatements_Keywords
+return @@statements_reserved
+
+
+end
+
+end
+
+
+
+end
+$tokens = []
+class Lexer
+    KEYWORDS = ["def","func","set","fn","function","math","if","end","class","clazz","Const","Dim","sys.echo","import","require","ascii","requires","method","actor","klass","sys","HaI","window","document","browser","earth","@NS","console","endif","endClass","endClazz","endKlass","End_Class","string","strng","yarn","int","INT","Integer","NUM","NUMBER","Digit","digi_T","echo","print","prntLn","printFL_n","printf","$","KTHNX_By.E","number","Int","Number","Klazz","klazz","Class","demo","dev","Dev","DEV","dEV","Requires","Using.libs","System","system","STDOUT","STDOUTT","ERR","THROW","Throw!","String","Bool","bool","Regex","regEX","regex","Boolean","TRUE","FALSE","true","false","PATTERN","Pattern","EXAMP","PSTACK","this","This","THis","ThIs","Self","self","current","xisn","_:Destruct","_~Destrct!","AND","And","Not","Yes","No","On","Off","module","scripting","language","Define","&Define","~","D","Sint","SINT","Double","Fixed","Fix","ERRORR","#INCLUDE","IO","::","File","file","IO~~_filE","(",")","{","}","Sod","End_Sod","SubClass","Subclass","Space","End.Sub_Class","FLASS","Flass","flass"]
+    
+    def tokenize(code)
+         i = 0
+ 
+    number = 0
+       @code = code
+        toky = @code.chomp
+        
+         while i < toky.size
+         if toky =~ /[0-9]+/ then
+             number++
+             i++
+      
+               
+             i = 0
+             
+         end
+         
+         
+     end
+     puts toky.to_s
+     end
+    
+end
+$LEXER = Lexer.new()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$tok = ""
+
+
+
+
+
+
+
+BEGIN {
+    print "FrapaScript Language!\n"
+}
+
 require 'cgi'
 
 $cgi = CGI.new "html4"
+$WS = HTML::Web.new($edt.to_s)
+puts $WS.getUrl 
 puts "0xf".hex
 
 
@@ -73,12 +175,20 @@ if $edt.include?"set" then
 $v = "var "
 $v_valname = $edt.slice 4..6
 $v_sign = /["t"]/
-$v_dat = $edt.split $v_sign
-$v_val = $edt.slice 9..11
+$v_dat = $edt.split /["t"]/
+$v_val = $edt.slice $v_dat[1]
 $real_sign = " = "  
 $edt.gsub(".","_")
 $outpJs1 = $v + $v_valname + $real_sign + $v_val + ";"
 $Jsfile.puts("#{$outpJs1.to_s}")
+end
+if $edt.include?"Printk local_VARS"then
+$all = local_variables
+print "#{$all}"
+$outpJs1 = "var "+$all.to_s
+$Jsfile.puts("#{$outpJs1.to_s}")
+
+
 end
 
 $Jsfile.close
@@ -117,10 +227,10 @@ pos = 0, line = 1,col=0,ch=nil
         end
         def addWord(word)
         word = word
-        editor.split word
+        $edt.split word
         end
         def skip_comma()
-        editor.split ","
+        $edt.split ","
         end
     end
 
@@ -140,7 +250,7 @@ zeke.sayHello
 set = /["set"]/
 add = /["+"]/
 subtract = /["-"]/
-exp = /["**"]/
+expo = /["**"]/
 exp2 = /["exp"]/
 modulo = /["%"]/
 multiply = /["*"]/
@@ -206,8 +316,16 @@ to_sign = /[" t"]/
     puts $stuff[0].to_s
     $to_decsgn = editor.split tokens[1]
      tokens.push dec_sh
-    $Toks = Tokens.new($stuff)
+    $Toks = Tokens.new($edt)
     
+    
+    
+    
+
+if editor.include? $Toks.addWord("import _hello").to_s then 
+    print "hello world"
+    
+end
      $dec_name = nil
      $t = nil
      if tokens[0].match(editor)
@@ -354,11 +472,15 @@ puts "Compiled output: #{$sf}"
 
 end    
 vab = editor.slice(15..18)
-if editor.include? "number.rndm" then
+if editor.include? "math.number.rndm_Seed%" then
 
 puts Random.new_seed
 end
-if editor.include? "number.Pi" then
+if editor.include?"math.number.rand<()>"then
+    puts Random.rand(editor.length)
+    
+end
+if editor.include? "math.number.Pi" then
 $stdout.puts Math::PI
 
 end
@@ -387,12 +509,23 @@ puts "0x01".to_s
 
 $clzname = editor.slice 6..9
 if editor.include? "clazz #{$clzname}" then
-$sign = editor.split /[":=>"]/
+$sign = editor.split /:=>/
 $sname = $sign[1]
-$svalue = editor.slice 14..15
-if editor.include? "Sys.ot.putB"+$clzname+"."+$sname then
-puts $svalue
+$svalue = $sname.split(" ")
+
+puts "<#FRAPASCRIPT0x97::KLASSES::#{$clzname.to_s}::VALUES::"+$svalue[1].to_s
+
+
 end
+
+
+if $S_DATA=="new #{$clzname.to_s}()"then
+    puts "INHERITED CLASS:"+"~this()"
+end
+
+if editor.include? "Sys.ot.putB "+$clzname+"."+$sname.to_s then
+puts $svalue[1].to_s
+puts "~ANONYMOUS CLASS:"+$sname
 end
 if editor.include? "number.add" then
 $n1 = editor.slice 11..12
@@ -510,7 +643,10 @@ if editor.include?"Sys.text.Htmlpf<()>" then
 puts "<p>#{$htmd}</p>"
 end
 end
-if editor.include?"Gdx.graphics.Gl_3d.drawXmastree" then
+if editor.include?"~"then
+puts editor.split(/~/)[1]
+end
+if editor.include?"CtK.Gdx.graphics.Gl_3d.drawXmastree" then
     
     puts"
 
@@ -541,7 +677,7 @@ end
 $ltime = editor.slice 8..10
 $ltime2 = editor.slice 10..12
 if editor.include?"loop->do#{$ltime.to_i}" or editor.include?"loop.do->#{$ltime2.to_i}"then
-$loopd = editor.slice 11..14
+$loopd = editor.slice 12..32
 $loopdf = editor.slice 13..15
 $ltime.to_i.times() do |i|
 puts $loopd or $loopdf
@@ -570,11 +706,8 @@ $stdout.printf "%s","#{$file_extens1.to_s}\n"
 end
 $dec_val = $stuff[$stuff.length]
 
-    f = File.new("code.frs", "w+")
-f.puts($edt)
-f.close
 
-$file = File.open("code.frs","r")
+$file = File.open(ARGV[1],"r")
 def lexer_streamFs()
 while(line = $file.gets)
 if line.include?"sys.echo" then
@@ -612,9 +745,7 @@ rbf.close()
 luaf.close
 jsf.close()
 puts File.read("Frapa-lang.rb")
-END {
-    $stdout.putc 'end'
-}
+
 if editor.include?"Gdx.Ascii.greek->~ho.baa"
 puts "რϕ".to_s
 end
@@ -623,8 +754,11 @@ if editor.include?"os.ret Keys->chars~Letters.a" then
     puts "a"
 end
 $dstr = editor.slice 0..4
-if editor.include?"#{$dstr}.Scanstr<(/*^./)>" then
+if editor.include?"#{$dstr}.Scanstr<(/*c./)>" then
     $dstr.scan(/./) {|l| puts l}
+end
+if editor.include?"#{$dstr}.Scanstr<(/&d+^/)>"then
+$dstr.scan(/d+/) {|j| puts j}
 end
 $nh = editor.slice 15..16
 if editor.include?"@NS.loop.do-> #{$nh.to_i}" then
@@ -716,4 +850,255 @@ if editor.include?"integers.constants.one"then
 end
 
 
+$json = editor.slice 17..29
+if editor.include?"compileto->json "then
+    puts JSON.parse($json)
+end
+def textFuncs
+if $edt.include?"System->Out->print"
+then 
+puts "#{$edt.slice 19..27}"
+end
+if $edt.include?"System:out:Println"then
+puts "#{$edt.slice 19..29}"
+end
+if $edt.include?"System.Out.Printf"then
+printf "%s","#{$edt.slice 18..29}"
+end
+end
+textFuncs
+if /[{]/.match(editor) and /[}]/.match(editor)then
+    $obj1 = Array.new()
+    $p = editor.split /{/
+    $a = editor.split /}/
+    $obj1[0]=$p[1]
+    
+    $comms = editor.split /,/
+    
+    
+    
+   
+    
 
+  
+  
+
+
+end
+
+
+if editor.include?"print"and editor.include?"\' "then
+    $quots = editor.split "\' "
+    $qstr = $quots[-1].to_s
+    print $qstr
+end
+if editor.include?"\' "then
+    $quots = editor.split "\' "
+    $qstr = $quots[-1].to_s
+    print $qstr
+end
+    
+if editor.include?"@[CtK.Gdx.graphics.drawSanta_Claus::()"
+puts "+########+ 
+          #+;;;;;;;;;'##. 
+        #';;;;;;;;;;;;;;++ 
+      ,#;;;;;;;;;;;;;;;;;'+ 
+     .+;;;;;;;;;;;;;;;;;;;+# 
+     #;;###;;;;';''''+++;;;# 
+    #;;#  ##################+ 
+  ,##+#  #'                 +# 
+ #;   # #                    ++ 
+#,     #       ########+      # 
+#      #   #######  #######`  + 
+#      #:##  #  o   o #` ##+#, 
+#:     ##    ;###    ###+    '# 
+ #;   '##  ##.   #;;+`  ##   # 
+  .###` ###'     `##+     ##+#       
+       #         `###        ,# 
+       #        ##  ##       .# 
+        ######## ~__~ #######+ 
+        #.  ##.         ##   # 
+         #                  # 
+         ##             +#### 
+        #;####`          #;+` 
+     : #;;;#               #;;+;: 
+    ###;;;##.  #      #   #'+;;+## 
+   ;# #'# #####    ##### ##' .# 
+  #    +# #;;;##.  ##;;;+#   ' # 
+ ##+    # .';;;;######;;;;;+ +#   +# 
+  ####+#  +';;;;;;;;;;;;;;;#  ###### 
+  ### #   #;;;;;;;;;;;;;;;;#.   # ## 
+        #.,,,,,,,,,,,,,,,,,,.+; 
+        #                     # 
+        +                     + 
+        +++++++++++++++++++++++ 
+                ###  ### 
+           ;#######  #######+ 
+            #### ##  ## ####."
+
+end
+def out
+$d = $edt.split("")
+yarn = $edt.split /""/
+puts $d.to_s
+$yarnTYPE = "YARN"
+puts $yarnTYPE if $edt.include?"word.class->type"
+if $d.include?'"'then
+puts "YARN"+yarn.to_s
+end
+end
+out
+$tokens = {
+    'type' => {
+        'number' => 'digit'
+    }
+}
+$number = /[0-9]/
+if editor =~ /[0-9]/
+puts "NUMBER:"+$edt.scan(/[0-9]+/){|d| puts d}
+end
+if add.match(editor)then
+$ad = editor.split add
+$num1 = $ad[-1].to_i
+$num2 = $ad[1].to_i
+puts $num1 + $num2
+
+end
+$num3 = editor.split /["()"]/
+$num4 = $num3[1].to_i
+if  editor.include?"String.toBinary->(#{$num4})"then
+$index1 = -1
+print $num4.to_s(2)
+
+end
+def think(c)
+return "IM THINKING ABOUT : "+c.to_s
+end
+if editor.include?"computer.think"then
+    
+    thinker_ai = editor.split /computer.think/
+    
+    puts(think(thinker_ai[1]))
+    if thinker_ai[1] =~ /[0-9]/ then
+        
+        
+        
+        
+        puts("IM THINKING ABOUT A : NUMBER")
+    end
+end
+if editor.include?"CtK.gL_dim.graphics.Methods.E8byte-sort" then
+256.times do |g|
+puts "#{g}~~--~~--~~#{g.chr}"
+
+end
+end
+if editor.include?"my"then
+    $My_name = editor.split(/my/)
+    $variable_name = $My_name[1]
+    $append = editor.split(/:=/)
+    $value = $append[1]
+    if editor.include?"System.print(#{$variable_name});"then
+        
+     
+     
+     
+     
+        puts $append[1]
+    end
+    
+end
+puts tokens
+module Parser
+class Tokens
+def initialize(toks)
+@toks = Array[toks]
+end
+ KEYWORDS = ["def","func","set","fn","function","math","if","end","class","clazz","Const","Dim","sys.echo","import","require","ascii","requires","method","actor","klass","sys","HaI","window","document","browser","earth","@NS","console","endif","endClass","endClazz","endKlass","End_Class","string","strng","yarn","int","INT","Integer","NUM","NUMBER","Digit","digi_T","echo","print","prntLn","printFL_n","printf","$","KTHNX_By.E","number","Int","Number","Klazz","klazz","Class","demo","dev","Dev","DEV","dEV","Requires","Using.libs","System","system","STDOUT","STDOUTT","ERR","THROW","Throw!","String","Bool","bool","Regex","regEX","regex","Boolean","TRUE","FALSE","true","false","PATTERN","Pattern","EXAMP","PSTACK","this","This","THis","ThIs","Self","self","current","xisn","_:Destruct","_~Destrct!","AND","And","Not","Yes","No","On","Off","module","scripting","language","Define","&Define","~","D","Sint","SINT","Double","Fixed","Fix","ERRORR","#INCLUDE","IO","::","File","file","IO~~_filE","(",")","{","}","Sod","End_Sod","SubClass","Subclass","Space","End.Sub_Class","FLASS","Flass","flass"]
+ 
+ 
+ 
+ 
+def getTokens
+  i = 0
+if @toks.size > 0 then
+
+puts $edt.include?(KEYWORDS[i..-1])
+
+end
+
+if @toks.size <= 0 then
+puts "!ERROR <##FRAPASCRIPT::> THE CURRENT IO::FILE IS VOID PLEASE ENTER VALID CODE OR WRITE SOMETHING!
+INDEX:#{__LINE__})=%@!>"
+
+end
+end
+end
+end
+
+$Tokens = Parser::Tokens.new($edt)
+
+$Tokens.getTokens
+
+if editor.include?"CHARS.Object.functions.all-()"then
+    puts "a"..."z"
+    
+end
+tokens = []
+
+
+
+
+
+if editor.include?"System.print(#{$clzname}.#{$sname});"then
+index = editor.length - 1
+
+puts editor[-1]
+$index = 0
+end
+if editor.include?"document.write(#{editor.slice 16..25});"then
+    print editor.slice 16..25
+    
+    
+end
+
+module AST
+    class Parse
+@@token_type = ["semicolon","identifier", "integer","number","yarn","string","operator"]
+ @@tokens = []
+ @@index = 0
+def parse
+if $edt.include?";"then
+    $semicolon = $edt.split /[;]/
+    @@index++
+    
+    
+    
+    
+
+    @@index = 0
+    end
+      @@rstr = /[a-zA-z]/
+      if $edt =~ @@rstr then
+       @@index++
+
+          @@index = 0
+      end
+    puts @@tokens.to_s
+end
+end
+end
+
+
+
+puts tokens
+
+
+
+
+
+
+
+parser = AST::Parse.new
+parser.parse
+sprintf("%s",parser.class.name)
